@@ -142,6 +142,12 @@ async def blindpick(
         "Reply to this DM with your pick — I'll keep it secret until your opponent answers too."
     )
 
+    # We're about to make network calls (DMing both players), which can take
+    # longer than Discord's 3-second response window. Defer now to buy more
+    # time, then fill in the real message with edit_original_response once
+    # we know the outcome.
+    await interaction.response.defer()
+
     failed_players = []
     for player in (player_one, player_two):
         try:
@@ -151,9 +157,8 @@ async def blindpick(
 
     if failed_players:
         names = ", ".join(p.mention for p in failed_players)
-        await interaction.response.send_message(
-            f"Couldn't DM {names} — they may have DMs disabled for this server. Blind pick cancelled.",
-            ephemeral=True,
+        await interaction.edit_original_response(
+            content=f"Couldn't DM {names} — they may have DMs disabled for this server. Blind pick cancelled."
         )
         # If the other player's DM *did* go through, let them know it's off.
         for player in (player_one, player_two):
@@ -319,22 +324,23 @@ async def reveal_rps(session: RPSSession):
         return
 
     outcome = (
-        f"**{session.player_one.mention}** wins!"
+        f"**{session.player_one.display_name}** wins!"
         if winner == "one"
-        else f"**{session.player_two.mention}** wins!"
+        else f"**{session.player_two.display_name}** wins!"
     )
 
     stageclause = (
-        f"**{session.player_one.display_name}** strikes two stages."
+        f"{session.player_one.mention} strikes two stages. Then, {session.player_two.mention} selects from the remaining two stages."
         if winner == "one"
-        else f"**{session.player_two.display_name}** strikes two stages."
+        else f"{session.player_two.mention} strikes two stages. Then, {session.player_one.mention} selects from the remaining two stages."
+
     )
 
 
     await channel.send(
         f"**{session.player_one.display_name}** picked **{choice_one.capitalize()}**.\n"
         f"**{session.player_two.display_name}** picked **{choice_two.capitalize()}**.\n"
-        f"{outcome}\n"
+        f"{outcome}\n\n"
         f"{stageclause}\n"
     )
 
