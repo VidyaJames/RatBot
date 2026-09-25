@@ -12,7 +12,7 @@ load_dotenv()
 CHARACTERS_FILE = os.path.join(os.path.dirname(__file__), "characters.txt")
 CHARACTERS_PAGE_SIZE = 25
 STAGES = [
-    "Dream Land",
+    "Spiral Mountain",
     "Goomba Road",
     "Pokemon Stadium",
     "Glacial River (Remix)",
@@ -307,7 +307,7 @@ class StageChooseButton(discord.ui.Button):
         channel = session.channel_id
         channel_obj = client.get_channel(channel) or await client.fetch_channel(channel)
         await channel_obj.send(
-            f"🎮 Stage strike complete! {session.winner.mention} banned **{session.banned_stages[0]}** and **{session.banned_stages[1]}**. "
+            f"Stage strike complete! {session.winner.mention} banned **{session.banned_stages[0]}** and **{session.banned_stages[1]}**. "
             f"{session.loser.mention} picked **{self.stage}** as the starting stage."
         )
         del pending_strikes[session.winner.id]
@@ -392,7 +392,7 @@ async def blindpick(
         return
 
     prompt = (
-        f"🎯 You've been picked for a **blind pick** in **{interaction.guild.name}**! "
+        f"You've been picked for a **blind pick** in **{interaction.guild.name}**! "
         "Select your character from the menu in this DM — I'll keep it secret until your opponent answers too.\n"
         "If you don't see your character, use the Next/Previous buttons to see more options."
     )
@@ -434,7 +434,7 @@ async def blindpick(
     pending_picks[player_two.id] = session
 
     await interaction.edit_original_response(
-        content=f"🎯 Blind pick started between {player_one.mention} and {player_two.mention} "
+        content=f"Blind pick started between {player_one.mention} and {player_two.mention} "
         "— waiting for their DM responses..."
     )
 
@@ -518,7 +518,7 @@ async def rps(
     for player in (player_one, player_two):
         try:
             await player.send(
-                f"🪨📄✂️ You've been challenged to **rock-paper-scissors** in "
+                f"You've been challenged to **rock-paper-scissors** in "
                 f"**{interaction.guild.name}**! Pick one:",
                 view=RPSChoiceView(session, player),
             )
@@ -544,7 +544,7 @@ async def rps(
     pending_rps[player_two.id] = session
 
     await interaction.edit_original_response(
-        content=f"🪨📄✂️ Rock-paper-scissors started between {player_one.mention} and "
+        content=f"Rock-paper-scissors started between {player_one.mention} and "
         f"{player_two.mention} — waiting for their picks..."
     )
 
@@ -592,7 +592,7 @@ async def strikerps(
     for player in (player_one, player_two):
         try:
             await player.send(
-                f"🪨📄✂️ You've been challenged to **rock-paper-scissors** in **{interaction.guild.name}**! "
+                f"You've been challenged to **rock-paper-scissors** in **{interaction.guild.name}**! "
                 "The winner will ban two stages, and the loser will choose the starting stage.",
                 view=RPSChoiceView(session, player),
             )
@@ -618,7 +618,7 @@ async def strikerps(
     pending_rps[player_two.id] = session
 
     await interaction.edit_original_response(
-        content=f"🪨📄✂️ Rock-paper-scissors started between {player_one.mention} and "
+        content=f"Rock-paper-scissors started between {player_one.mention} and "
         f"{player_two.mention} — waiting for their picks..."
     )
 
@@ -645,10 +645,10 @@ async def coinflip(
     loser = player_two if winner is player_one else player_one
 
     await interaction.response.send_message(
-        f"🪙 Coinflip result:\n"
+        f"Coinflip result:\n"
         f"{winner.mention} wins and will strike two stages.\n"
         f"{loser.mention} will then pick from the remaining two stages to begin the set.\n\n"
-        f"**Legal Stages: Dream Land, Goomba Road, Pokemon Stadium, Glacial River (Remix).**"
+        f"**Legal Stages: Spiral Mountain, Goomba Road, Pokemon Stadium, Glacial River (Remix).**"
     )
 
 
@@ -687,7 +687,7 @@ async def strike(
     pending_strikes[loser.id] = session
 
     await interaction.response.send_message(
-        f"🪙 {winner.mention} wins the coinflip and will ban two stages. "
+        f"{winner.mention} wins the coinflip and will ban two stages. "
         f"{loser.mention} will pick from the remaining stages.",
     )
 
@@ -731,7 +731,7 @@ async def reveal_rps(session: RPSSession):
         for player in (session.player_one, session.player_two):
             try:
                 await player.send(
-                    "🪨📄✂️ Tie! Pick again:", view=RPSChoiceView(session, player)
+                    "Tie! Pick again:", view=RPSChoiceView(session, player)
                 )
             except discord.Forbidden:
                 failed_players.append(player)
@@ -799,7 +799,7 @@ async def reveal_rps(session: RPSSession):
             f"**{session.player_two.display_name}** picked **{choice_two.capitalize()}**.\n"
             f"{outcome}\n\n"
             f"{stageclause}\n\n"
-            f"**Legal Stages: Dream Land, Goomba Road, Pokemon Stadium, Glacial River (Remix).**"
+            f"**Legal Stages: Spiral Mountain, Goomba Road, Pokemon Stadium, Glacial River (Remix).**"
         )
 
     if not session.stage_strike:
